@@ -39,5 +39,5 @@ jobs:
     - name: artifact
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: libLSMASHSource.so
-        path: build_vs
+        name: output
+        path: build_vs/libLSMASHSource.so
