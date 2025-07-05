@@ -35,12 +35,9 @@ jobs:
         cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=OFF -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=OFF -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON)
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
         cmake --build build_vs -j 2
-
-    - name: Zip the Build
-      run: zip -r releaseA.zip "build_vs"
     
     - name: artifact
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: releaseA.zip
-        path: .
+        name: libLSMASHSource.so
+        path: build_vs
