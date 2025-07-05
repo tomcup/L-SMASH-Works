@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
 
     steps:
     - name: Checkout
@@ -17,27 +17,10 @@ jobs:
         fetch-depth: 1
         submodules: true
 
-    - name: Install macos automake, cmake
-      if: ${{ matrix.os == 'macos-latest' }}
-      run: |
-        brew update
-        brew install automake cmake zlib
-
     - name: Install ubuntu cmake
-      if: ${{ matrix.os == 'ubuntu-latest' }}
       run: |
         sudo apt update
         sudo apt install cmake
-
-    - name: Install AviSynth
-      run: |
-        git clone https://github.com/AviSynth/AviSynthPlus --branch 3.7 --depth 1 avisynth-build
-        pushd avisynth-build
-        cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_PLUGINS=OFF -DENABLE_INTEL_SIMD=OFF
-        cmake --build build -j 2
-        sudo cmake --install build
-        popd
-        rm -rf avisynth-build
 
     - name: Setup vapoursynth
       uses: deadnews/action-setup-vs@v1.0.4
@@ -50,10 +33,13 @@ jobs:
         sudo make install -j2
         popd
         cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=OFF -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=OFF -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON)
-        if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            cmake_settings+=(-DCMAKE_PREFIX_PATH=/opt/homebrew/opt/zlib)
-        fi
-        cmake -B build_avs -DBUILD_VS_PLUGIN=OFF "${cmake_settings[@]}"
-        cmake --build build_avs -j 2
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
         cmake --build build_vs -j 2
+
+    - name: Zip the Build
+      run: zip -r release.zip "build_vs"
+    
+    - name: artifact
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: release.zip
