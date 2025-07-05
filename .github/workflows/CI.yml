@@ -37,9 +37,9 @@ jobs:
         cmake --build build_vs -j 2
 
     - name: Zip the Build
-      run: zip -r release.zip "build_vs"
+      run: zip -r releaseA.zip "build_vs"
     
     - name: artifact
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: release.zip
+        name: releaseA.zip
