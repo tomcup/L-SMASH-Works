@@ -25,18 +25,21 @@ jobs:
     - name: Setup vapoursynth
       uses: deadnews/action-setup-vs@v1.0.4
 
+    - name: Setup Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.2.1
+
     - name: Build AviSynth/VapourSynth plugin
       run: |
         pushd FFmpeg
         ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
-        make -j8
+        make -j16
         sudo make install -j8
         mkdir build
         make install -j8 DESTDIR=build
         popd
-        cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=OFF -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=OFF -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON)
+        cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=ON -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=ON -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=OFF)
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
-        cmake --build build_vs -j 8
+        cmake --build build_vs -j 16
 
     - name: upload ffmpeg build
       uses: actions/upload-artifact@v4.6.2
