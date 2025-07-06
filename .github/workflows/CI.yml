@@ -29,15 +29,23 @@ jobs:
       run: |
         pushd FFmpeg
         ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
-        make -j2
-        sudo make install -j2
+        make -j4
+        sudo make install -j4
+        mkdir build
+        make install -j4 DESTDIR=build
         popd
         cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=OFF -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=OFF -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=ON)
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
-        cmake --build build_vs -j 2
-    
-    - name: artifact
+        cmake --build build_vs -j 4
+
+    - name: upload ffmpeg build
       uses: actions/upload-artifact@v4.6.2
       with:
-        name: output
+        name: ffmpegbuild
+        path: FFmpeg/build/lib
+    
+    - name: upload vsplugin artifact
+      uses: actions/upload-artifact@v4.6.2
+      with:
+        name: vsplugin
         path: build_vs/libLSMASHSource.so
