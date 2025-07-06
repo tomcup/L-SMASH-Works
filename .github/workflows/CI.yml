@@ -29,7 +29,7 @@ jobs:
       run: |
         pushd FFmpeg
         ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
-        make -j4
+        make -j8
         sudo make install -j8
         mkdir build
         make install -j8 DESTDIR=build
