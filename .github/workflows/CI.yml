@@ -25,10 +25,8 @@ jobs:
     - name: Setup vapoursynth
       uses: deadnews/action-setup-vs@v1.0.4
 
-    - name: Setup Vulkan SDK
-      uses: humbletim/setup-vulkan-sdk@v1.2.1
-      with:
-        vulkan-query-version: 1.4
+    - name: Install Vulkan SDK
+      uses: humbletim/install-vulkan-sdk@v1.2
 
     - name: Build AviSynth/VapourSynth plugin
       run: |
