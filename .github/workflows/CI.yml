@@ -24,15 +24,16 @@ jobs:
       with:
         cache: true
 
-    - name: Build libdav1d
+    - name: Clone libdav1d
       run: |
         git clone --depth=1 https://code.videolan.org/videolan/dav1d.git
-        cd dav1d
-        mkdir build && cd build
-        meson setup .. --default-library=static
-        ninja
-        ninja install
-        cd ..
+        
+    - name: Build libdav1d
+      uses: BSFishy/meson-build@v1.0.3
+      with:
+        action: install
+        directory: build
+        setup-options: --default-library=static
 
     - name: Build FFmpeg
       run: |
