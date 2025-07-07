@@ -28,6 +28,10 @@ jobs:
     - name: Install Vulkan SDK
       uses: humbletim/install-vulkan-sdk@v1.2
 
+    - name: Install dav1d
+      run: |
+        sudo apt install libdav1d-dev
+
     - name: Build AviSynth/VapourSynth plugin
       run: |
         pushd FFmpeg
