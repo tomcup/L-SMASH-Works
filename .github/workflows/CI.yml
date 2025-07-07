@@ -17,10 +17,8 @@ jobs:
         fetch-depth: 1
         submodules: true
 
-    - name: Install ubuntu cmake
-      run: |
-        sudo apt update
-        sudo apt install cmake
+    - name: Install  cmake
+      uses: lukka/get-cmake@v4.1.0-rc1
 
     - name: Setup vapoursynth
       uses: deadnews/action-setup-vs@v1.0.4
@@ -28,20 +26,23 @@ jobs:
     - name: Install Vulkan SDK
       uses: humbletim/install-vulkan-sdk@v1.2
 
-    - name: Install dav1d
+    - name: Build libdav1d
       run: |
         sudo apt install libdav1d-dev
 
-    - name: Build AviSynth/VapourSynth plugin
+    - name: Build FFmpeg
       run: |
         pushd FFmpeg
-        ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
-        make -j16
+        ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-libdav1d --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
+        make -j8
         sudo make install -j8
         mkdir build
         make install -j8 DESTDIR=build
         popd
-        cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=ON -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=ON -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=OFF)
+
+    - name: Build  AviSynth/VapourSynth plugin
+      run: |
+        cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=OFF -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=ON -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=OFF)
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
         cmake --build build_vs -j 16
 
