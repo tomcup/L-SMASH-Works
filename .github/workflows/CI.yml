@@ -29,6 +29,7 @@ jobs:
         python -m pip install meson
         git clone --depth=1 https://code.videolan.org/videolan/dav1d.git
         cd dav1d
+        ls
         mkdir build && cd build
         meson setup .. --default-library=static
         ninja
