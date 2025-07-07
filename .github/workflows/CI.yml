@@ -27,6 +27,7 @@ jobs:
     - name: Build libdav1d
       run: |
         python -m pip install meson
+        sudo apt install nasm
         git clone --depth=1 https://code.videolan.org/videolan/dav1d.git
         cd dav1d
         ls
