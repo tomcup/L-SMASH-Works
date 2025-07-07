@@ -30,27 +30,28 @@ jobs:
         sudo apt install nasm
         git clone --depth=1 https://code.videolan.org/videolan/dav1d.git
         cd dav1d
-        ls
         mkdir build && cd build
         meson setup .. --default-library=static
-        ninja
-        ninja install
+        ninja -j$(nproc)
+        sudo ninja install
+        cd ../..
+        
 
     - name: Build FFmpeg
       run: |
         pushd FFmpeg
         ./configure --enable-gpl --enable-version3 --disable-static --enable-shared --disable-all --disable-autodetect --enable-libdav1d --enable-avcodec --enable-avformat --enable-swresample --enable-swscale --disable-asm --disable-debug
-        make -j8
-        sudo make install -j8
+        make -j$(nproc)
+        sudo make install -j$(nproc)
         mkdir build
-        make install -j8 DESTDIR=build
+        make install -j$(nproc) DESTDIR=build
         popd
 
     - name: Build  AviSynth/VapourSynth plugin
       run: |
         cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=ON -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=ON -DZLIB_USE_STATIC_LIBS=OFF -Ddav1d_USE_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF)
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
-        cmake --build build_vs -j 16
+        cmake --build build_vs -j $(nproc)
 
     - name: upload libdav1d build
       uses: actions/upload-artifact@v4.6.2
