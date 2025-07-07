@@ -40,7 +40,7 @@ jobs:
 
     - name: Build  AviSynth/VapourSynth plugin
       run: |
-        cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=ON -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=ON -DZLIB_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=OFF)
+        cmake_settings=(-S . -G Ninja -DENABLE_DAV1D=ON -DENABLE_MFX=OFF -DENABLE_XML2=OFF -DENABLE_VPX=OFF -DENABLE_VULKAN=ON -DZLIB_USE_STATIC_LIBS=OFF -Ddav1d_USE_STATIC_LIBS=OFF -DBUILD_SHARED_LIBS=OFF)
         cmake -B build_vs -DBUILD_AVS_PLUGIN=OFF "${cmake_settings[@]}"
         cmake --build build_vs -j 16
 
