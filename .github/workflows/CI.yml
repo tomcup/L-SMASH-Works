@@ -28,13 +28,12 @@ jobs:
       run: |
         git clone --depth=1 https://code.videolan.org/videolan/dav1d.git
         cd dav1d
-        mkdir build && cd build
         
     - name: Build libdav1d
       uses: BSFishy/meson-build@v1.0.3
       with:
         action: install
-        directory: ..
+        directory: build
         setup-options: --default-library=static
 
     - name: Build FFmpeg
